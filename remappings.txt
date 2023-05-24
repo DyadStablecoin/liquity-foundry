@@ -1,3 +1,4 @@
 @openzeppelin/=lib/openzeppelin-contracts/
+@openzeppelin-new/=lib/openzeppelin-contracts-new/
 @openzeppelin-upgradeable/=lib/openzeppelin-contracts-upgradeable/
 @solmate/=lib/solmate/
