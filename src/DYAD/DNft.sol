@@ -3,9 +3,9 @@ pragma solidity =0.8.17;
 
 import {ERC721, ERC721Enumerable} from "@openzeppelin-new/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import {Owned} from "@solmate/src/auth/Owned.sol";
-import {IDNft} from "../interfaces/IDNft.sol";
+import {IDNft} from "./IDNft.sol";
 
-contract DNft is IERC721Enumerable, Owned, IDNft {
+contract DNft is ERC721Enumerable, Owned, IDNft {
   uint public constant INSIDER_MINTS = 300; 
   uint public constant PUBLIC_MINTS  = 1700; 
 
