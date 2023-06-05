@@ -9,7 +9,7 @@ contract DNftTroveManager {
     uint debt;
     uint coll;
     uint stake;
-    Status status;
+    // Status status;
     uint128 arrayIndex;
   }
 
