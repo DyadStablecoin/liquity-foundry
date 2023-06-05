@@ -79,7 +79,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     }
 
     // QQ: Why does this map from an address
-    mapping (uint => Trove) public Troves;
+    mapping (address => Trove) public Troves;
 
     uint public totalStakes;
 
