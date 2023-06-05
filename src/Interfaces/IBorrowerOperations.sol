@@ -37,7 +37,7 @@ interface IBorrowerOperations {
         address _lqtyStakingAddress
     ) external;
 
-    function openTrove(uint _maxFee, uint _LUSDAmount, address _upperHint, address _lowerHint) external payable;
+    function openTrove(address _id, uint _maxFee, uint _LUSDAmount, address _upperHint, address _lowerHint, uint id) external payable;
 
     function addColl(address _upperHint, address _lowerHint) external payable;
 
