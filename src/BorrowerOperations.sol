@@ -13,10 +13,16 @@ import "./Dependencies/Ownable.sol";
 import "./Dependencies/CheckContract.sol";
 import "./Dependencies/console.sol";
 
+interface IDNft {
+
+}
+
 contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOperations {
     string constant public NAME = "BorrowerOperations";
 
     // --- Connected contract declarations ---
+
+    IDNft public dNft;
 
     ITroveManager public troveManager;
 
@@ -94,6 +100,10 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     event LUSDBorrowingFeePaid(address indexed _borrower, uint _LUSDFee);
     
     // --- Dependency setters ---
+
+    constructor(address _dNft) public {
+        dNft = IDNft(_dNft);
+    }
 
     function setAddresses(
         address _troveManagerAddress,
