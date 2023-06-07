@@ -14,7 +14,7 @@ import "./Dependencies/CheckContract.sol";
 import "./Dependencies/console.sol";
 
 interface IDNft {
-
+  function hasPermission(uint id, address operator) external view returns (bool);
 }
 
 contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOperations {
@@ -98,6 +98,11 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     event TroveCreated(address indexed _borrower, uint arrayIndex);
     event TroveUpdated(address indexed _borrower, uint _debt, uint _coll, uint stake, BorrowerOperation operation);
     event LUSDBorrowingFeePaid(address indexed _borrower, uint _LUSDFee);
+
+    modifier isNftOwnerOrHasPermission(address id) {
+      require(dNft.hasPermission(uint(id), msg.sender));
+      _;
+    }
     
     // --- Dependency setters ---
 
@@ -169,7 +174,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
       uint    _LUSDAmount,
       address _upperHint,
       address _lowerHint
-    ) external payable override {
+    ) isNftOwnerOrHasPermission(_id) external payable override {
         ContractsCache memory contractsCache = ContractsCache(troveManager, activePool, lusdToken);
         LocalVariables_openTrove memory vars;
 
