@@ -231,7 +231,11 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     }
 
     // Send ETH as collateral to a trove
-    function addColl(address _upperHint, address _lowerHint) external payable override {
+    function addColl(
+      address _id, 
+      address _upperHint,
+      address _lowerHint
+    ) isNftOwnerOrHasPermission(_id) external payable override {
         _adjustTrove(msg.sender, 0, 0, false, _upperHint, _lowerHint, 0);
     }
 

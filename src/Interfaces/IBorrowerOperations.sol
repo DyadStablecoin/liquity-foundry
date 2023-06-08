@@ -45,7 +45,7 @@ interface IBorrowerOperations {
       address _lowerHint
     ) external payable;
 
-    function addColl(address _upperHint, address _lowerHint) external payable;
+    function addColl(uint _id, address _upperHint, address _lowerHint) external payable;
 
     function moveETHGainToTrove(address _user, address _upperHint, address _lowerHint) external payable;
 
