@@ -49,7 +49,12 @@ interface IBorrowerOperations {
 
     function moveETHGainToTrove(address _user, address _upperHint, address _lowerHint) external payable;
 
-    function withdrawColl(uint _amount, address _upperHint, address _lowerHint) external;
+    function withdrawColl(
+      address _id,
+      uint    _amount,
+      address _upperHint,
+      address _lowerHint
+    ) external;
 
     function withdrawLUSD(uint _maxFee, uint _amount, address _upperHint, address _lowerHint) external;
 

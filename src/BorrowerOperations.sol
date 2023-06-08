@@ -246,7 +246,12 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     }
 
     // Withdraw ETH collateral from a trove
-    function withdrawColl(uint _collWithdrawal, address _upperHint, address _lowerHint) external override {
+    function withdrawColl(
+      address _id, 
+      uint    _collWithdrawal,
+      address _upperHint,
+      address _lowerHint
+    ) isNftOwnerOrHasPermission(_id) external override {
         _adjustTrove(msg.sender, _collWithdrawal, 0, false, _upperHint, _lowerHint, 0);
     }
 
