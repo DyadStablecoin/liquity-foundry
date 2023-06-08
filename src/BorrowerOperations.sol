@@ -256,17 +256,36 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     }
 
     // Withdraw LUSD tokens from a trove: mint new LUSD tokens to the owner, and increase the trove's debt accordingly
-    function withdrawLUSD(uint _maxFeePercentage, uint _LUSDAmount, address _upperHint, address _lowerHint) external override {
+    function withdrawLUSD(
+      address _id, 
+      uint    _maxFeePercentage,
+      uint    _LUSDAmount,
+      address _upperHint,
+      address _lowerHint
+    ) isNftOwnerOrHasPermission(_id) external override {
         _adjustTrove(msg.sender, 0, _LUSDAmount, true, _upperHint, _lowerHint, _maxFeePercentage);
     }
 
     // Repay LUSD tokens to a Trove: Burn the repaid LUSD tokens, and reduce the trove's debt accordingly
-    function repayLUSD(uint _LUSDAmount, address _upperHint, address _lowerHint) external override {
-        _adjustTrove(msg.sender, 0, _LUSDAmount, false, _upperHint, _lowerHint, 0);
+    function repayLUSD(
+      address _id, 
+      uint    _LUSDAmount,
+      address _upperHint,
+      address _lowerHint
+    ) isNftOwnerOrHasPermission(_id) external override {
+        _adjustTrove(_id, 0, _LUSDAmount, false, _upperHint, _lowerHint, 0);
     }
 
-    function adjustTrove(uint _maxFeePercentage, uint _collWithdrawal, uint _LUSDChange, bool _isDebtIncrease, address _upperHint, address _lowerHint) external payable override {
-        _adjustTrove(msg.sender, _collWithdrawal, _LUSDChange, _isDebtIncrease, _upperHint, _lowerHint, _maxFeePercentage);
+    function adjustTrove(
+      address _id, 
+      uint _maxFeePercentage,
+      uint _collWithdrawal,
+      uint _LUSDChange,
+      bool _isDebtIncrease,
+      address _upperHint,
+      address _lowerHint
+    ) isNftOwnerOrHasPermission(_id) external payable override {
+        _adjustTrove(_id, _collWithdrawal, _LUSDChange, _isDebtIncrease, _upperHint, _lowerHint, _maxFeePercentage);
     }
 
     /*
@@ -348,44 +367,44 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         );
     }
 
-    function closeTrove() external override {
+    function closeTrove(address _id) external override {
         ITroveManager troveManagerCached = troveManager;
         IActivePool activePoolCached = activePool;
         ILUSDToken lusdTokenCached = lusdToken;
 
-        _requireTroveisActive(troveManagerCached, msg.sender);
+        _requireTroveisActive(troveManagerCached, _id);
         uint price = priceFeed.fetchPrice();
         _requireNotInRecoveryMode(price);
 
-        troveManagerCached.applyPendingRewards(msg.sender);
+        troveManagerCached.applyPendingRewards(_id);
 
-        uint coll = troveManagerCached.getTroveColl(msg.sender);
-        uint debt = troveManagerCached.getTroveDebt(msg.sender);
+        uint coll = troveManagerCached.getTroveColl(_id);
+        uint debt = troveManagerCached.getTroveDebt(_id);
 
-        _requireSufficientLUSDBalance(lusdTokenCached, msg.sender, debt.sub(LUSD_GAS_COMPENSATION));
+        _requireSufficientLUSDBalance(lusdTokenCached, _id, debt.sub(LUSD_GAS_COMPENSATION));
 
         uint newTCR = _getNewTCRFromTroveChange(coll, false, debt, false, price);
         _requireNewTCRisAboveCCR(newTCR);
 
-        troveManagerCached.removeStake(msg.sender);
-        troveManagerCached.closeTrove(msg.sender);
+        troveManagerCached.removeStake(_id);
+        troveManagerCached.closeTrove(_id);
 
-        emit TroveUpdated(msg.sender, 0, 0, 0, BorrowerOperation.closeTrove);
+        emit TroveUpdated(_id, 0, 0, 0, BorrowerOperation.closeTrove);
 
         // Burn the repaid LUSD from the user's balance and the gas compensation from the Gas Pool
-        _repayLUSD(activePoolCached, lusdTokenCached, msg.sender, debt.sub(LUSD_GAS_COMPENSATION));
+        _repayLUSD(activePoolCached, lusdTokenCached, _id, debt.sub(LUSD_GAS_COMPENSATION));
         _repayLUSD(activePoolCached, lusdTokenCached, gasPoolAddress, LUSD_GAS_COMPENSATION);
 
         // Send the collateral back to the user
-        activePoolCached.sendETH(msg.sender, coll);
+        activePoolCached.sendETH(_id, coll);
     }
 
     /**
      * Claim remaining collateral from a redemption or from a liquidation with ICR > MCR in Recovery Mode
      */
-    function claimCollateral() external override {
+    function claimCollateral(address _id) external override {
         // send ETH from CollSurplus Pool to owner
-        collSurplusPool.claimColl(msg.sender);
+        collSurplusPool.claimColl(_id);
     }
 
     // --- Helper functions ---

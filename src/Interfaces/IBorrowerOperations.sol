@@ -56,15 +56,34 @@ interface IBorrowerOperations {
       address _lowerHint
     ) external;
 
-    function withdrawLUSD(uint _maxFee, uint _amount, address _upperHint, address _lowerHint) external;
+    function withdrawLUSD(
+      address _id,
+      uint    _maxFee,
+      uint    _amount,
+      address _upperHint,
+      address _lowerHint
+    ) external;
 
-    function repayLUSD(uint _amount, address _upperHint, address _lowerHint) external;
+    function repayLUSD(
+      address _id,
+      uint    _amount,
+      address _upperHint,
+      address _lowerHint
+    ) external;
 
-    function closeTrove() external;
+    function closeTrove(address _id) external;
 
-    function adjustTrove(uint _maxFee, uint _collWithdrawal, uint _debtChange, bool isDebtIncrease, address _upperHint, address _lowerHint) external payable;
+    function adjustTrove(
+      address _id,
+      uint _maxFee,
+      uint _collWithdrawal,
+      uint _debtChange,
+      bool isDebtIncrease,
+      address _upperHint,
+      address _lowerHint
+    ) external payable;
 
-    function claimCollateral() external;
+    function claimCollateral(address _id) external;
 
     function getCompositeDebt(uint _debt) external pure returns (uint);
 }
