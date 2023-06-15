@@ -50,12 +50,12 @@ contract DNft is ERC721Enumerable, Owned, IDNft {
   }
 
   /// @inheritdoc IDNft
-  function mintInsiderNft(address to)
+  function mintNft(address to)
     external 
-      onlyOwner 
+    payable
     returns (uint) {
-      if (++insiderMints > INSIDER_MINTS) revert InsiderMintsExceeded();
-      return _mintNft(to); 
+      if (++publicMints > PUBLIC_MINTS) revert PublicMintsExceeded();
+      return _mintNft(to);
   }
 
   function _mintNft(address to)
